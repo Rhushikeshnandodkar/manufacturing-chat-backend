@@ -14,6 +14,7 @@ from .serializers import (
 )
 from .utils import extract_text_from_pdf
 
+from django.db import connections
 import os
 import time
 from dotenv import load_dotenv
@@ -95,6 +96,28 @@ Context from uploaded PDFs:
 
 Answer (concise; use numbered steps if appropriate):""",
 )
+
+
+@api_view(["GET"])
+def health(request):
+    """
+    Lightweight healthcheck for load balancers and uptime monitors.
+    Returns 200 when the API process is running and the database is reachable.
+    """
+    db_ok = True
+    try:
+        connections["default"].cursor()
+    except Exception:
+        db_ok = False
+
+    payload = {
+        "status": "ok" if db_ok else "degraded",
+        "database": db_ok,
+    }
+    return Response(
+        payload,
+        status=status.HTTP_200_OK if db_ok else status.HTTP_503_SERVICE_UNAVAILABLE,
+    )
 
 
 @api_view(["POST"])
