@@ -1,0 +1,15 @@
+django
+djangorestframework
+python-dotenv
+
+sentence-transformers
+torch
+transformers
+
+langchain
+langchain-community
+langchain-groq
+
+pinecone
+pypdf
+djangorestframework-simplejwt
